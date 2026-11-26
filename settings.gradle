@@ -1,0 +1,37 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+rootProject.name = 'AndroidSDKDemo'
+include ':app'
+
+// Public clones use Maven. Local developers opt into the SDK source checkout.
+def local = new Properties()
+def localFile = file('local.properties')
+if (localFile.exists()) localFile.withInputStream { local.load(it) }
+def sdkSourceDir = providers.gradleProperty('sdkSourceDir')
+    .getOrElse(local.getProperty('gizwits.sdk.sourceDir', '')).trim()
+if (sdkSourceDir) {
+    def sdkDirectory = file(sdkSourceDir)
+    if (!new File(sdkDirectory, 'sdk/build.gradle').isFile()) {
+        throw new GradleException('sdkSourceDir must point to an AndroidSDKV5 checkout')
+    }
+    includeBuild(sdkDirectory) {
+        dependencySubstitution {
+            ['sdk', 'sdk-mqtt', 'sdk-bluetooth', 'sdk-lan'].each { name ->
+                substitute module("io.github.gizwits:${name}") using project(":${name}")
+            }
+        }
+    }
+}

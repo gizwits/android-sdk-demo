@@ -1,0 +1,5 @@
+# Copy to release-signing.properties in this directory for signed release APKs.
+MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
+MYAPP_RELEASE_STORE_PASSWORD=
+MYAPP_RELEASE_KEY_ALIAS=
+MYAPP_RELEASE_KEY_PASSWORD=

@@ -1,0 +1,131 @@
+<resources>
+    <string name="app_name">AndroidSDK</string>
+    <string name="agree">同意</string>
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+    <string name="loading">加载中</string>
+    <string name="can_update">可更新</string>
+    <string name="privacy_policy_statement">隐私条款与用户协议声明</string>
+    <string name="privacy_policy_statement_description">
+        欢迎使用....APP，请你务必阅读，充分理解《隐私协议》和《用户使用协议》各条款，为了提供基础服务，我们需要收集
+        你的个人信息和设备信息。未经你的授权同意，我们不会主动向任何第三方共享你的个人信息和设备信息。我们将严格遵守
+        相关法律法规和隐私政策以保护您的个人信息。如你同意，请点击"同意"开始接受我们的服务
+    </string>
+    <string name="product_key_label">pk:</string>
+    <string name="mac_label">mac:</string>
+    <string name="device_id_label">deviceId:</string>
+    <string name="device_id_place_holder">********************</string>
+    <string name="network_lost_hint">当前无法连接网络，请检查网络设置是否正常</string>
+    <!-- 应用登录页面 -->
+    <string name="user_login_title">用户登录</string>
+    <string name="register">注册账号</string>
+    <string name="forgot_password">忘记密码</string>
+    <string name="user_name_label">请输入用户账号</string>
+    <string name="user_password_label">请输入用户密码</string>
+    <string name="login_privacy_policy_hint">已阅读并同意《用户协议》和《隐私政策》</string>
+    <string name="login">登陆</string>
+    <string name="skip">跳过</string>
+    <string name="login_by_anonymous">匿名登录</string>
+    <string name="empty_user_name_hint">请输入有效的用户账号</string>
+    <string name="empty_user_password_hint">请输入有效的用户密码</string>
+    <!-- 应用注册页面 -->
+    <string name="user_register_title">用户注册</string>
+    <!-- 应用主页 -->
+    <string name="my_home">我的家</string>
+
+    <string name="scan_code_permissions_tips">应用运行扫一扫功能需要获取以下权限：</string>
+    <string name="scan_code_camera_permission">相机权限</string>
+    <string name="scan_code_camera_permission_description">获取相机权限扫描获取二维码内容</string>
+
+    <string name="scan_ble_device_permissions_tips">应用运行蓝牙扫描功能需要获取以下权限：</string>
+    <string name="location_permission">位置权限</string>
+    <string name="location_permission_description">应用需要获取位置权限开启蓝牙扫描能力</string>
+    <string name="scan_ble_device_permission">搜索附近设备权限</string>
+    <string name="scan_ble_device_permission_description">
+        应用需要获取搜索附近设备权限来搜索蓝牙设备
+    </string>
+
+    <string name="add_device">添加设备</string>
+    <string name="app_setting">应用设置</string>
+    <string name="device_debug">设备调试</string>
+
+    <string name="search_device">搜索设备</string>
+    <string name="provide_credentials">添加配网信息</string>
+    <string name="input_wifi_ssid">输入WiFi名称</string>
+    <string name="input_wifi_password">输入WiFi密码</string>
+    <string name="connect_device">正在连接设备</string>
+    <string name="configure_device_network">配置设备网络</string>
+    <string name="configure_device_success">配置成功</string>
+    <string name="configure_device_failure">配置失败</string>
+
+    <string name="scan_code">扫一扫</string>
+    <string name="scan_code_suggestion">将相机正对二维码，尽可能确保二维码显示在捕获窗口的正中心</string>
+    <string name="binding_device_tips">设备绑定</string>
+    <string name="binding_device_description">扫描设备二维码，将设备关联绑定到当前已登录的用户账户</string>
+
+    <string name="bound_device_list">绑定设备列表</string>
+    <string name="bluetooth_device_list">蓝牙设备列表</string>
+    <string name="lan_device_list">局域网设备列表</string>
+    <string name="unknown_device">未知设备</string>
+
+    <string name="device_filter_suggestion">指定需要被过滤出设备的ProductKey和Mac</string>
+    <!-- 设备控制页面 -->
+    <string name="bluetooth_module">蓝牙模块</string>
+    <string name="lan_module">Lan模块</string>
+    <string name="mqtt_module">Mqtt模块</string>
+    <string name="module_offline_state">模块离线</string>
+    <string name="module_online_state">模块在线</string>
+    <string name="module_online_controllable_state">模块在线可控</string>
+    <string name="device_bluetooth_control_title">蓝牙控制</string>
+    <string name="device_lan_control_title">局域网控制</string>
+    <string name="device_wan_control_title">云端控制</string>
+    <!-- 设备控制数据页面 -->
+    <string name="device_control_data_title">设备控制</string>
+    <string name="device_configure_network_title">设备配网</string>
+    <string name="data_point_status_writable">可写</string>
+    <string name="data_point_status_readonly">只读</string>
+    <string name="data_point_status_fault">错误</string>
+    <string name="data_point_status_alert">警告</string>
+    <string name="data_point_status_unknown">未知</string>
+    <!-- 设备管理页面 -->
+    <string name="device_manage">设备管理</string>
+    <string name="device_name">设备名称</string>
+    <string name="device_product_name">产品名称</string>
+    <string name="device_product_key">产品标识</string>
+    <string name="device_mac">设备Mac</string>
+    <string name="device_id">设备ID</string>
+    <string name="device_passcode">设备密码</string>
+    <string name="device_wifi_hard_version">Wifi硬件版本号</string>
+    <string name="device_wifi_soft_version">Wifi软件版本号</string>
+    <string name="device_mcu_hard_version">MCU硬件版本号</string>
+    <string name="device_mcu_soft_version">MCU软件版本号</string>
+    <string name="device_firmware_id">固件ID</string>
+    <string name="device_firmware_version">固件版本号</string>
+    <string name="unbind_device">解绑设备</string>
+    <string name="bind_device">绑定设备</string>
+    <string name="register_device">注册设备</string>
+    <string name="unbind_device_request">确认解绑 %1$s 设备吗？</string>
+    <!-- OTA -->
+    <string name="device_ota">OTA</string>
+    <string name="device_start_ota">开始更新</string>
+    <string name="device_cancel_ota">取消更新</string>
+    <string name="device_ota_download">下载固件中</string>
+    <string name="device_ota_tran">发送固件中</string>
+    <string name="device_ota_verification">固件校验中</string>
+
+    <string name="device_ota_end">升级完成</string>
+    <string name="device_ota_check_device">检查设备状态中</string>
+
+    <!-- 设置页面 -->
+    <string name="not_logged_in">未登录</string>
+    <string name="anonymous_user">匿名用户</string>
+    <string name="user_greeting">你好，%1$s</string>
+    <string name="logout_user">退出登录</string>
+    <!-- 用户管理页面 -->
+    <string name="user_manage">用户管理</string>
+    <string name="user_feedback">用户反馈</string>
+    <string name="clean_cache">清理缓存</string>
+    <string name="nickname">昵称</string>
+    <string name="not_set">未设置</string>
+    <string name="email">邮箱</string>
+</resources>

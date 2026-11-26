@@ -1,0 +1,210 @@
+package com.gizwits.smart.app.feature.changePassword
+
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.gizwits.smart.app.R
+import com.gizwits.smart.app.ui.component.SettingItem
+import com.gizwits.smart.app.ui.component.SmartOutlinedTextField
+import com.gizwits.smart.app.ui.component.TransparentTopAppBar
+import com.gizwits.smart.sdk.core.data.model.UserState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChangePasswordRoute(
+    onBackClick: () -> Unit,
+    viewModel: ChangePasswordViewModel = hiltViewModel()
+) {
+    val uiState: UserUiState by viewModel.uiState.collectAsState()
+    Scaffold(
+        topBar = {
+            TransparentTopAppBar(
+                title = {
+                    Text(
+                        text = "修改密码",
+                        style = LocalTextStyle.current.copy(
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp),
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBackClick,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_return_24),
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }
+    ) { contentPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.background,
+                            MaterialTheme.colorScheme.primary
+                        )
+                    )
+                )
+        ) {
+            ChangePasswordScreen(
+                uiState = uiState,
+                onBackClick =onBackClick,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ChangePasswordScreen(
+    uiState: UserUiState,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+
+    Column(
+        modifier = modifier.padding(start = 24.dp, top = 0.dp, end = 24.dp, bottom = 36.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(0.9f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            SmartOutlinedTextField(
+                value = uiState.userPassword,
+                onValueChange = { uiState.userPassword = it },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = true,
+                label = {
+                    Text(text = "旧密码")
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            uiState.isPasswordVisible = !uiState.isPasswordVisible
+                        }
+                    ){
+                        Icon(
+                            painter = painterResource(
+                                id = if (uiState.isPasswordVisible) {
+                                    R.drawable.ic_preview_open_24
+                                } else {
+                                    R.drawable.ic_preview_close_24
+                                }
+                            ),
+                            contentDescription = null
+                        )
+                    }
+                },
+                visualTransformation = if (uiState.isPasswordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                shape = RoundedCornerShape(16.dp)
+            )
+            SmartOutlinedTextField(
+                value = uiState.newUserPassword,
+                onValueChange = { uiState.newUserPassword = it },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = true,
+                label = {
+                    Text(text = "新密码")
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            uiState.isNewPasswordVisible = !uiState.isNewPasswordVisible
+                        }
+                    ){
+                        Icon(
+                            painter = painterResource(
+                                id = if (uiState.isNewPasswordVisible) {
+                                    R.drawable.ic_preview_open_24
+                                } else {
+                                    R.drawable.ic_preview_close_24
+                                }
+                            ),
+                            contentDescription = null
+                        )
+                    }
+                },
+                visualTransformation = if (uiState.isNewPasswordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                shape = RoundedCornerShape(16.dp)
+            )
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        val success = uiState.changePassword()
+                        if (success) {
+                            onBackClick()
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(1.0f).padding(top = 16.dp),
+                enabled = true
+            ) {
+                Text(text = "修改")
+            }
+        }
+
+    }
+
+
+}

@@ -1,0 +1,140 @@
+plugins {
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.hilt
+    id 'kotlin-kapt'
+
+}
+
+// Credentials never live in tracked Gradle properties or Kotlin sources.
+def demoSecrets = new Properties()
+def demoSecretsFile = rootProject.file('demo-secrets.properties')
+if (demoSecretsFile.exists()) demoSecretsFile.withInputStream { demoSecrets.load(it) }
+def demoCredential = { key ->
+    providers.environmentVariable(key).getOrElse(demoSecrets.getProperty(key, '')).trim()
+}
+def demoAppId = demoCredential('GIZWITS_APP_ID')
+def demoAppSecret = demoCredential('GIZWITS_APP_SECRET')
+def validateDemoConfig = tasks.register('validateDemoConfig') {
+    doLast {
+        if (!(demoAppId ==~ /[a-zA-Z0-9]{32}/) || !(demoAppSecret ==~ /[a-zA-Z0-9]{32}/)) {
+            throw new GradleException('Copy demo-secrets.properties.example to demo-secrets.properties and fill in GIZWITS_APP_ID and GIZWITS_APP_SECRET (32 letters/digits each), or set those environment variables.')
+        }
+    }
+}
+tasks.configureEach {
+    if (name == 'preBuild') dependsOn(validateDemoConfig)
+}
+
+android {
+    namespace 'com.gizwits.smart.app'
+    compileSdk 36
+
+    def updateBaseURL = providers.gradleProperty("appUpdateBaseUrl").orElse(providers.environmentVariable("APP_UPDATE_BASE_URL")).getOrElse("")
+    def updateChannel = providers.gradleProperty("appUpdateChannel").orElse(providers.environmentVariable("APP_UPDATE_CHANNEL")).getOrElse("stable")
+    def updateAllowHttp = providers.environmentVariable("APP_UPDATE_ALLOW_HTTP").getOrElse("false") == "true"
+    if (!(updateChannel in ["stable", "beta"])) throw new GradleException("Invalid APP_UPDATE_CHANNEL")
+    if (updateBaseURL && !(updateBaseURL.startsWith("https://") || (updateAllowHttp && updateBaseURL.startsWith("http://")))) throw new GradleException("APP_UPDATE_BASE_URL requires HTTPS")
+
+    sourceSets.main.assets.srcDir(rootProject.file('local-assets'))
+
+    defaultConfig {
+        buildConfigField 'String', 'GIZWITS_APP_ID', groovy.json.JsonOutput.toJson(demoAppId)
+        buildConfigField 'String', 'GIZWITS_APP_SECRET', groovy.json.JsonOutput.toJson(demoAppSecret)
+        applicationId "com.xpg.wifidemo"
+        minSdk 26
+        targetSdk 36
+        versionCode (providers.gradleProperty("appVersionCode").getOrElse("1").toInteger())
+        versionName providers.gradleProperty("appVersionName").getOrElse("2.4.8")
+        buildConfigField "String", "APP_UPDATE_BASE_URL", groovy.json.JsonOutput.toJson(updateBaseURL)
+        buildConfigField "String", "APP_UPDATE_CHANNEL", groovy.json.JsonOutput.toJson(updateChannel)
+        buildConfigField "boolean", "APP_UPDATE_ALLOW_HTTP", updateAllowHttp.toString()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    def releaseSigningProperties = new Properties()
+    def releaseSigningPropertiesFile = file("release-signing.properties")
+    def useLocalReleaseSigning = releaseSigningPropertiesFile.exists() && providers.gradleProperty("skipLocalReleaseSigning").getOrElse("false") != "true"
+    if (useLocalReleaseSigning) {
+        releaseSigningPropertiesFile.withInputStream { releaseSigningProperties.load(it) }
+    }
+
+    signingConfigs {
+        release {
+            if (useLocalReleaseSigning) {
+                storeFile file(releaseSigningProperties.getProperty("MYAPP_RELEASE_STORE_FILE"))
+                storePassword releaseSigningProperties.getProperty("MYAPP_RELEASE_STORE_PASSWORD")
+                keyAlias releaseSigningProperties.getProperty("MYAPP_RELEASE_KEY_ALIAS")
+                keyPassword releaseSigningProperties.getProperty("MYAPP_RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            if (useLocalReleaseSigning) { signingConfig signingConfigs.release }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    kotlin {
+        jvmToolchain(11)
+    }
+
+    buildFeatures {
+        compose true
+        buildConfig true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+    testImplementation "junit:junit:4.13.2"
+    implementation(libs.androidx.core.ktx)
+    implementation platform(libs.androidx.compose.bom)
+    androidTestImplementation platform(libs.androidx.compose.bom)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.datastore.preferences)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.barcode.scanning)
+    implementation(libs.gson)
+    implementation "io.github.gizwits:sdk:${providers.gradleProperty('gizwitsSdkVersion').get()}"
+    implementation "io.github.gizwits:sdk-mqtt:${providers.gradleProperty('gizwitsSdkVersion').get()}"
+    implementation "io.github.gizwits:sdk-bluetooth:${providers.gradleProperty('gizwitsSdkVersion').get()}"
+    implementation "io.github.gizwits:sdk-lan:${providers.gradleProperty('gizwitsSdkVersion').get()}"
+}
